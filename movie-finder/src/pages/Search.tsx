@@ -1,20 +1,18 @@
 import { useEffect, useState } from 'react'
-import { buildSearchUrl, buildDetailsUrl } from '../services/api'
+import { buildSearchUrl } from '../services/api'
 import { useFetch } from '../hooks/useFetch'
+import { useNavigate } from 'react-router-dom'
 import MovieCard from '../components/MovieCard'
 import type { Movie } from '../context/FavoritesContext'
 
 type SearchResult = { Search?: Movie[]; totalResults?: string; Response: string; Error?: string }
-type DetailsResult = Movie & { Plot: string; Genre: string; Runtime: string; imdbRating: string }
 
 export default function Search() {
   const [query, setQuery] = useState('naruto')
   const [page, setPage] = useState(1)
   const url = query ? buildSearchUrl(query, page) : null
   const { data, loading, error } = useFetch<SearchResult>(url, [url])
-  const [selected, setSelected] = useState<string | null>(null)
-  const detailsUrl = selected ? buildDetailsUrl(selected) : null
-  const details = useFetch<DetailsResult>(detailsUrl, [detailsUrl])
+  const navigate = useNavigate()
 
   useEffect(() => { setPage(1) }, [query])
 
@@ -41,7 +39,7 @@ export default function Search() {
 
       <div className="grid">
         {results.map(m => (
-          <MovieCard key={m.imdbID} movie={m} onOpen={setSelected} />
+          <MovieCard key={m.imdbID} movie={m} onOpen={id => navigate(`/details/${id}`)} />
         ))}
       </div>
 
@@ -53,18 +51,7 @@ export default function Search() {
         </div>
       )}
 
-      {selected && details.data && (
-        <div className="card" style={{ marginTop: 16 }}>
-          <div className="body">
-            <div className="row"><strong>{details.data.Title}</strong><span className="badge">{details.data.Year}</span></div>
-            <p>{details.data.Plot}</p>
-            <small>{details.data.Genre} - {details.data.Runtime} - Note {details.data.imdbRating}</small>
-            <div className="row">
-              <button onClick={() => setSelected(null)}>Fermer</button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Details are shown on a dedicated page */}
     </div>
   )
 }
