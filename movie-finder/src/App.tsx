@@ -1,10 +1,10 @@
 import { Link, Routes, Route, useLocation } from 'react-router-dom'
 import Search from './pages/Search'
 import Favorites from './pages/Favorites'
-import { useFavorites } from './context/FavoritesContext'
+import { useTheme } from './context/ThemeContext'
 
 export default function App() {
-  const { dark, toggleDark } = useFavorites()
+  const { dark, toggleDark } = useTheme()
   const loc = useLocation()
 
   return (
