@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { buildSearchUrl } from '../services/api'
 import { useFetch } from '../hooks/useFetch'
 import { useNavigate } from 'react-router-dom'
@@ -10,11 +10,13 @@ type SearchResult = { Search?: Movie[]; totalResults?: string; Response: string;
 export default function Search() {
   const [query, setQuery] = useState('naruto')
   const [page, setPage] = useState(1)
+  const inputRef = useRef<HTMLInputElement | null>(null)
   const url = query ? buildSearchUrl(query, page) : null
   const { data, loading, error } = useFetch<SearchResult>(url, [url])
   const navigate = useNavigate()
 
   useEffect(() => { setPage(1) }, [query])
+  useEffect(() => { inputRef.current?.focus() }, [])
 
   const results = data?.Search || []
   const total = Number(data?.totalResults || 0)
@@ -25,8 +27,14 @@ export default function Search() {
       <header>
         <h2>Recherche</h2>
         <div className="input-row">
-          <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Titre de film..." />
-          <button onClick={() => setPage(1)}>Rechercher</button>
+          <input
+            ref={inputRef}
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') setPage(1) }}
+            placeholder="Titre de film..."
+          />
+          <button onClick={() => { setPage(1); inputRef.current?.focus() }}>Rechercher</button>
         </div>
       </header>
 
