@@ -1,6 +1,7 @@
 import { Link, Routes, Route, useLocation } from 'react-router-dom'
 import Search from './pages/Search'
 import Favorites from './pages/Favorites'
+import Details from './pages/Details'
 import { useTheme } from './context/ThemeContext'
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/" element={<Search />} />
           <Route path="/search" element={<Search />} />
           <Route path="/favorites" element={<Favorites />} />
+          <Route path="/details/:id" element={<Details />} />
         </Routes>
       </div>
     </div>
