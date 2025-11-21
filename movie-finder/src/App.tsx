@@ -1,7 +1,8 @@
-import { Link, Routes, Route, useLocation } from 'react-router-dom'
+import { Link, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import Search from './pages/Search'
 import Favorites from './pages/Favorites'
 import Details from './pages/Details'
+import Home from './pages/Home'
 import { useTheme } from './context/ThemeContext'
 
 export default function App() {
@@ -22,7 +23,8 @@ export default function App() {
           </div>
         </nav>
         <Routes>
-          <Route path="/" element={<Search />} />
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/details/:id" element={<Details />} />
