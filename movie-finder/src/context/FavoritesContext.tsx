@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react'
 import type { ReactNode } from 'react'
 
 export type Movie = {
@@ -40,9 +40,11 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     })
   }
 
-  function isFavorite(id: string) {
-    return favorites.some(m => m.imdbID === id)
-  }
+  const favoriteIds = useMemo(() => new Set(favorites.map(m => m.imdbID)), [favorites])
+
+  const isFavorite = useCallback((id: string) => {
+    return favoriteIds.has(id)
+  }, [favoriteIds])
 
   return (
     <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite }}>
