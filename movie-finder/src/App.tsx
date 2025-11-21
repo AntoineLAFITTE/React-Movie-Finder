@@ -1,35 +1,31 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Link, Routes, Route, useLocation } from 'react-router-dom'
+import Search from './pages/Search'
+import Favorites from './pages/Favorites'
+import { useFavorites } from './context/FavoritesContext'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const { dark, toggleDark } = useFavorites()
+  const loc = useLocation()
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className={dark ? 'dark' : ''}>
+      <div className="container">
+        <nav>
+          <div className="row">
+            <h1>Movie Finder</h1>
+          </div>
+          <div className="links">
+            <Link to="/search" className={loc.pathname === '/search' ? 'active' : ''}>Recherche</Link>
+            <Link to="/favorites" className={loc.pathname === '/favorites' ? 'active' : ''}>Favoris</Link>
+            <button onClick={toggleDark}>{dark ? '☀️ Clair' : '🌙 Sombre'}</button>
+          </div>
+        </nav>
+        <Routes>
+          <Route path="/" element={<Search />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/favorites" element={<Favorites />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
-
-export default App
