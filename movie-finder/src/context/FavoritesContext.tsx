@@ -12,22 +12,18 @@ type FavoritesContextType = {
   favorites: Movie[]
   toggleFavorite: (movie: Movie) => void
   isFavorite: (id: string) => boolean
-  dark: boolean
-  toggleDark: () => void
 }
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined)
 
 export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<Movie[]>([])
-  const [dark, setDark] = useState(false)
+
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem('mfavorites')
-      const theme = localStorage.getItem('mdark')
       if (raw) setFavorites(JSON.parse(raw))
-      if (theme) setDark(theme === '1')
     } catch {}
   }, [])
 
@@ -35,9 +31,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('mfavorites', JSON.stringify(favorites))
   }, [favorites])
 
-  useEffect(() => {
-    localStorage.setItem('mdark', dark ? '1' : '0')
-  }, [dark])
+
 
   function toggleFavorite(movie: Movie) {
     setFavorites(prev => {
@@ -50,10 +44,8 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     return favorites.some(m => m.imdbID === id)
   }
 
-  function toggleDark() { setDark(d => !d) }
-
   return (
-    <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite, dark, toggleDark }}>
+    <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite }}>
       {children}
     </FavoritesContext.Provider>
   )
